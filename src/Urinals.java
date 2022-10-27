@@ -16,6 +16,11 @@ public class Urinals {
                 return false;
             }
         }
+        for (int i = 0; i < n-1; i++) {
+            if (input.charAt(i) == '1' && input.charAt(i) == input.charAt(i+1)) {
+                return false;
+            }
+        }
         return true;
     }
 

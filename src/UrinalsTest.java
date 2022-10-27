@@ -29,4 +29,13 @@ class UrinalsTest {
         Assertions.assertTrue(urinals.validateInput("10101010101010101010"));
         System.out.println("====== Rishikesh Anand == Test two complete =======");
     }
+
+    @Test
+    void validateInputContents() {
+        Assertions.assertTrue(urinals.validateInput("10101010101010101010"));
+        Assertions.assertFalse(urinals.validateInput("011"));
+        Assertions.assertFalse(urinals.validateInput("111"));
+        Assertions.assertTrue(urinals.validateInput("000"));
+        System.out.println("====== Rishikesh Anand == Test three complete =======");
+    }
 }

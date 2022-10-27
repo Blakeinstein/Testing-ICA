@@ -2,6 +2,8 @@
 File authored by: Rishikesh Anand
  */
 
+import java.util.ArrayList;
+
 public class Urinals {
     /**
      * Validates the input to check if it conforms to input guidelines
@@ -22,6 +24,10 @@ public class Urinals {
             }
         }
         return true;
+    }
+
+    ArrayList<String> readFile() {
+        return null;
     }
 
     public static void main(String[] args) {

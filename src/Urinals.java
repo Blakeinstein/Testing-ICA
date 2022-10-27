@@ -9,6 +9,8 @@ public class Urinals {
      * @return true if input is valid, false otherwise.
      */
     Boolean validateInput(String input) {
+        var n = input.length();
+        if (n < 1 || n > 20) return false;
         return true;
     }
 

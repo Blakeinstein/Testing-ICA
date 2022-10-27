@@ -11,8 +11,10 @@ class UrinalsTest {
     }
 
     @Test
-    void validateInput() {
+    void validateInputSize() {
         Assertions.assertFalse(urinals.validateInput(""));
+        Assertions.assertFalse(urinals.validateInput("101010101010101010101"));
+        Assertions.assertTrue(urinals.validateInput("10101010101010101010"));
         System.out.println("====== Rishikesh Anand == Test one complete =======");
     }
 }

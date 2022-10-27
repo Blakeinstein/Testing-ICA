@@ -11,6 +11,11 @@ public class Urinals {
     Boolean validateInput(String input) {
         var n = input.length();
         if (n < 1 || n > 20) return false;
+        for (var ch : input.toCharArray()) {
+            if (!(ch == '1' || ch == '0')) {
+                return false;
+            }
+        }
         return true;
     }
 

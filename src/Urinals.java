@@ -1,6 +1,8 @@
-import org.junit.jupiter.api.Test;
+/*
+File authored by: Rishikesh Anand
+ */
 
-public class Main {
+public class Urinals {
     public static void main(String[] args) {
         System.out.println("Hello world!");
     }

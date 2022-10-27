@@ -2,6 +2,7 @@
 File authored by: Rishikesh Anand
  */
 
+import java.io.*;
 import java.util.ArrayList;
 
 public class Urinals {
@@ -26,8 +27,22 @@ public class Urinals {
         return true;
     }
 
+    /**
+     * Read "urinal.dat" and return list of inputs
+     * @return An array list of inputs from "urinal.dat"
+     */
     ArrayList<String> readFile() {
-        return null;
+        var list = new ArrayList<String>();
+        try {
+            var reader = new BufferedReader(new FileReader("./urinal.dat"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.equals("-1")) break;
+                list.add(line);
+            }
+        } catch (IOException e) {}
+
+        return list;
     }
 
     public static void main(String[] args) {

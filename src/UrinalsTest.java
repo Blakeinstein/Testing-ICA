@@ -1,21 +1,30 @@
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class UrinalsTest {
     private static final File sourceFile = new File("./urinal.dat");
     private static final File tempFile = new File("./urinal.dat.bak");
     private final Urinals urinals = new Urinals();
 
+    void writeContents(String content) {
+        try {
+            var writer = new FileWriter(sourceFile);
+            writer.write(content);
+            writer.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     @BeforeAll
     static void setup() {
         var flag = sourceFile.renameTo(tempFile);
-        Assertions.assertTrue(flag, "Failed to backup file");
+        Assumptions.assumeTrue(flag, "Failed to backup file");
         System.out.println("Backed up input file");
     }
 
@@ -58,7 +67,7 @@ class UrinalsTest {
         // validate input state
 
         // no consecutive 1 should be accepted
-        Assertions.assertTrue(urinals.validateInput("10101010101010101010"), "String with no consecutive s should be accepted");
+        Assertions.assertTrue(urinals.validateInput("10101010101010101010"), "String with no consecutive 1s should be accepted");
 
         // consecutive 1s should not be accepted
         Assertions.assertFalse(urinals.validateInput("011"), "String with consecutive 1s should not be accepted");
@@ -68,10 +77,45 @@ class UrinalsTest {
         System.out.println("====== Rishikesh Anand == Test three complete =======");
     }
 
+    @Test
+    void readFile() {
+        // Validate if file is read correctly
+
+        var lines = new String[]{
+                "1010101010",
+                "001010000",
+                "00000"
+        };
+
+        writeContents(String.join("\n", lines));
+        Assumptions.assumeTrue(sourceFile.canRead(), "Unable to read input file for testing");
+        Assertions.assertArrayEquals(
+                urinals.readFile().toArray(),
+                lines,
+                "File contents should be read correctly with EOF terminator"
+        );
+
+        var newLines = new ArrayList<>(Arrays.asList(lines));
+        newLines.add("-1");
+        writeContents(String.join("\n", newLines));
+        Assumptions.assumeTrue(sourceFile.canRead(), "Unable to read input file for testing");
+        Assertions.assertArrayEquals(
+                urinals.readFile().toArray(),
+                lines,
+                "File contents should be read correctly with -1 terminator"
+        );
+
+        var flag = sourceFile.delete();
+        Assumptions.assumeTrue(flag, "Unable to delete file");
+        Assertions.assertTrue(urinals.readFile().isEmpty(), "Missing file should yield empty list");
+
+        System.out.println("====== Rishikesh Anand == Test four complete =======");
+    }
+
     @AfterAll
     static void cleanup() {
         var flag = tempFile.renameTo(sourceFile);
-        Assertions.assertTrue(flag, "Failed to restore file");
+        Assumptions.assumeTrue(flag, "Failed to restore file");
         System.out.println("Restored file");
     }
 }

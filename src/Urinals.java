@@ -114,6 +114,7 @@ public class Urinals {
                 var writer = new FileWriter(file);
                 writer.write(builder.toString());
                 writer.close();
+                System.out.println(String.format("Output written to %s", outfile));
             } catch (IOException e) {
                 System.out.println(builder.toString());
             }

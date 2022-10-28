@@ -1,5 +1,7 @@
 # Urinals
 
+GITHUB URL: https://github.com/Blakeinstein/Testing-ICA
+
 > **The unwritten rule**
 > 
 > In men's public toilets with urinals, there is this unwritten rule that you leave at least one urinal free between you and
@@ -9,3 +11,12 @@ same time on public toilets with 5 urinals when following this rule (Only 2 if t
 
 The program aims to yield the maximum number of free urinals as an integer according to the unwritten rule.
 
+## Running the program
+
+> Use intellij
+
+### Tests
+Select the Test run configuration on the top right corner and click run
+
+### CLi
+Select the cli run configuration on the top right corner and click run.

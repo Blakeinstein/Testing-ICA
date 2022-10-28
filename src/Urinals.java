@@ -41,7 +41,7 @@ public class Urinals {
                 if (line.equals("-1")) break;
                 list.add(line);
             }
-        } catch (IOException e) {}
+        } catch (IOException ignored) {}
 
         return list;
     }
@@ -78,8 +78,35 @@ public class Urinals {
                 filename = String.format("rule%d.txt", fileNumber++);
             } while((new File(filename)).exists());
         }
-        (new File(filename)).createNewFile();
+        var f = (new File(filename)).createNewFile();
+        if (!f) throw new IOException();
         return filename;
+    }
+
+    /**
+     * Read from input file and write to output file
+     * @return name of file output was written to
+     */
+    String writeOutputToFile() {
+        // read from file
+        var inputs = readFile();
+        var builder = new StringBuilder();
+        for (var inp : inputs) {
+            builder.append(evaluateMaxFreeUrinals(inp)).append("\n");
+        }
+        try {
+            var outfile = createOutputFilename();
+            var file = new File(outfile);
+            if (!file.exists()) throw new IOException();
+            var writer = new FileWriter(file);
+            writer.write(builder.toString());
+            writer.close();
+            System.out.printf("Output written to %s%n", outfile);
+            return outfile;
+        } catch (IOException e) {
+            System.out.println(builder);
+        }
+        return null;
     }
 
     public static void main(String[] args) {
@@ -91,33 +118,15 @@ public class Urinals {
             retry = false;
             System.out.print("Read from urinal.dat? (Y/n) ");
             String ans = reader.next();
-            if (ans.toLowerCase().equals("y") || ans.isEmpty()) {
+            if (ans.equalsIgnoreCase("y") || ans.isEmpty()) {
                 read = true;
-            } else if (ans.toLowerCase().equals("n")) {
-                read = false;
-            } else {
+            } else if (!ans.equalsIgnoreCase("n")) {
                 System.out.println("\n Invalid input, try again");
                 retry = true;
             }
         }
         if (read) {
-            // read from file
-            var inputs = urinal.readFile();
-            var builder = new StringBuilder();
-            for (var inp : inputs) {
-                builder.append(urinal.evaluateMaxFreeUrinals(inp)).append("\n");
-            }
-            try {
-                var outfile = urinal.createOutputFilename();
-                var file = new File(outfile);
-                if (!file.exists()) throw new IOException();
-                var writer = new FileWriter(file);
-                writer.write(builder.toString());
-                writer.close();
-                System.out.println(String.format("Output written to %s", outfile));
-            } catch (IOException e) {
-                System.out.println(builder.toString());
-            }
+            urinal.writeOutputToFile();
         } else {
             // read from stdin
             System.out.print("Waiting for input: ");

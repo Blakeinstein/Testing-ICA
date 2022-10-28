@@ -11,10 +11,10 @@ class UrinalsTest {
     private static final File tempFile = new File("./urinal.dat.bak");
     private final Urinals urinals = new Urinals();
 
-    void writeContents(String content) {
+    void writeContents(String[] content) {
         try {
             var writer = new FileWriter(sourceFile);
-            writer.write(content);
+            writer.write(String.join("\n", content));
             writer.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -27,8 +27,10 @@ class UrinalsTest {
         if (file.exists()) {
             var fileNumber = 1;
             do {
-                file.delete();
-                file = new File(String.format("rule%d.txt", fileNumber++));
+                var flag = file.delete();
+                Assumptions.assumeTrue(flag, String.format("Failed to delete file %s", outFile));
+                outFile = String.format("rule%d.txt", fileNumber++);
+                file = new File(outFile);
             } while (file.exists());
         }
     }
@@ -101,7 +103,7 @@ class UrinalsTest {
 
         // Test for EOF terminator
         // prepare input file
-        writeContents(String.join("\n", lines));
+        writeContents(lines);
         Assumptions.assumeTrue(sourceFile.canRead(), "Unable to read input file for testing");
 
         Assertions.assertArrayEquals(
@@ -114,7 +116,7 @@ class UrinalsTest {
         // prepare input file
         var newLines = new ArrayList<>(Arrays.asList(lines));
         newLines.add("-1");
-        writeContents(String.join("\n", newLines));
+        writeContents(newLines.toArray(new String[0]));
         Assumptions.assumeTrue(sourceFile.canRead(), "Unable to read input file for testing");
 
         Assertions.assertArrayEquals(
@@ -222,7 +224,11 @@ class UrinalsTest {
                         String.format("%s already exists", filename)
                 );
 
-                file.createNewFile();
+                var flag = file.createNewFile();
+                Assumptions.assumeTrue(
+                        flag,
+                        String.format("Failed to create file %s", filename)
+                );
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -242,6 +248,44 @@ class UrinalsTest {
         cleanOutputFiles();
 
         System.out.println("====== Rishikesh Anand == Test six complete =======");
+    }
+
+    @Test
+    void writeOutputToFile() throws IOException {
+        // validate that appropriate output is written to file
+        var inp = new String[]{
+                "100001",
+                "1010101",
+                "0000000",
+                "abc"
+        };
+        writeContents(inp);
+
+        var inputFile = new File("urinal.dat");
+        Assumptions.assumeTrue(
+                inputFile.exists(),
+                "Input file was not created"
+        );
+        Assumptions.assumeTrue(
+                inputFile.canRead(),
+                "Input file cannot be read"
+        );
+
+        var outfile = urinals.writeOutputToFile();
+        var reader = new BufferedReader(new FileReader(outfile));
+        String line;
+        int i = 0;
+        while ((line = reader.readLine()) != null) {
+            Assertions.assertEquals(
+                Integer.toString(urinals.evaluateMaxFreeUrinals(inp[i++])),
+                line,
+                "Valid output for input line"
+            );
+        }
+
+        cleanOutputFiles();
+
+        System.out.println("====== Rishikesh Anand == Test seven complete =======");
     }
 
     @Test
@@ -270,7 +314,7 @@ class UrinalsTest {
             System.out.flush();
             System.setOut(newOut);
             // parse stdout as string
-            var s = new String(byteBuffer.toByteArray(), Charset.defaultCharset());
+            var s = byteBuffer.toString(Charset.defaultCharset());
             // get last word from input
             var tokens = s.trim().split(" ");
             var output = tokens[tokens.length - 1];
@@ -286,7 +330,7 @@ class UrinalsTest {
         System.setIn(originalIn);
         System.setOut(originalOut);
 
-        System.out.println("====== Rishikesh Anand == Test seven complete =======");
+        System.out.println("====== Rishikesh Anand == Test eight complete =======");
     }
 
     @AfterAll

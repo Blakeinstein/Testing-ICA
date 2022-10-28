@@ -1,5 +1,7 @@
 # Urinals
-
+Author: Rishikesh Anand
+ASURITE User ID: ranand19
+ASU ID: (emplid): 1225385486
 GITHUB URL: https://github.com/Blakeinstein/Testing-ICA
 
 > **The unwritten rule**

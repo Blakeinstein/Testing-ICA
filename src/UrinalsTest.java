@@ -1,8 +1,7 @@
 import org.junit.jupiter.api.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -243,6 +242,51 @@ class UrinalsTest {
         cleanOutputFiles();
 
         System.out.println("====== Rishikesh Anand == Test six complete =======");
+    }
+
+    @Test
+    void validateMain() {
+        final InputStream originalIn = System.in;
+        final PrintStream originalOut = System.out;
+
+        // mock stdout
+        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+        PrintStream newOut = new PrintStream(byteBuffer);
+        System.setOut(newOut);
+
+        // test for stdin behavior
+        for (var testInput : new String[]{
+                "100001",
+                "1010101",
+                "0000000",
+                "abc"
+        }) {
+            // Set input content
+            InputStream in = new ByteArrayInputStream(String.format("n\n%s\n", testInput).getBytes());
+            // pass input to stdin
+            System.setIn(in);
+            Urinals.main(null);
+            // flush stdout to buffer
+            System.out.flush();
+            System.setOut(newOut);
+            // parse stdout as string
+            var s = new String(byteBuffer.toByteArray(), Charset.defaultCharset());
+            // get last word from input
+            var tokens = s.trim().split(" ");
+            var output = tokens[tokens.length - 1];
+            // check if output is valid
+            Assertions.assertEquals(
+                    Integer.toString(urinals.evaluateMaxFreeUrinals(testInput)),
+                    output,
+                    "Should return valid output"
+            );
+        }
+
+        // clear mocks
+        System.setIn(originalIn);
+        System.setOut(originalOut);
+
+        System.out.println("====== Rishikesh Anand == Test seven complete =======");
     }
 
     @AfterAll

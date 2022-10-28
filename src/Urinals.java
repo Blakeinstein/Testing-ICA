@@ -4,6 +4,7 @@ File authored by: Rishikesh Anand
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Urinals {
     /**
@@ -64,6 +65,11 @@ public class Urinals {
         return count;
     }
 
+    /**
+     * Create output file name
+     * @return name of new file
+     * @throws IOException if unable to create new file, usually because of permissions.
+     */
     String createOutputFilename() throws IOException {
         String filename = "rule.txt";
         if ((new File(filename)).exists()) {
@@ -77,6 +83,46 @@ public class Urinals {
     }
 
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        Scanner reader = new Scanner(System.in);
+        boolean read = false, retry = true;
+        var urinal = new Urinals();
+        // ask if user wants to read from file or read from stdin
+        while (retry) {
+            retry = false;
+            System.out.print("Read from urinal.dat? (Y/n) ");
+            String ans = reader.next();
+            if (ans.toLowerCase().equals("y") || ans.isEmpty()) {
+                read = true;
+            } else if (ans.toLowerCase().equals("n")) {
+                read = false;
+            } else {
+                System.out.println("\n Invalid input, try again");
+                retry = true;
+            }
+        }
+        if (read) {
+            // read from file
+            var inputs = urinal.readFile();
+            var builder = new StringBuilder();
+            for (var inp : inputs) {
+                builder.append(urinal.evaluateMaxFreeUrinals(inp)).append("\n");
+            }
+            try {
+                var outfile = urinal.createOutputFilename();
+                var file = new File(outfile);
+                if (!file.exists()) throw new IOException();
+                var writer = new FileWriter(file);
+                writer.write(builder.toString());
+                writer.close();
+            } catch (IOException e) {
+                System.out.println(builder.toString());
+            }
+        } else {
+            // read from stdin
+            System.out.print("Waiting for input: ");
+            reader.nextLine();
+            String inp = reader.nextLine();
+            System.out.println(urinal.evaluateMaxFreeUrinals(inp));
+        }
     }
 }

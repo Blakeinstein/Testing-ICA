@@ -2,6 +2,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -18,6 +19,18 @@ class UrinalsTest {
             writer.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    static void cleanOutputFiles() {
+        var outFile = "rule.txt";
+        var file = new File(outFile);
+        if (file.exists()) {
+            var fileNumber = 1;
+            do {
+                file.delete();
+                file = new File(String.format("rule%d.txt", fileNumber++));
+            } while (file.exists());
         }
     }
 
@@ -161,10 +174,82 @@ class UrinalsTest {
         System.out.println("====== Rishikesh Anand == Test five complete =======");
     }
 
+    @Test
+    void createOutputFilename() throws IOException {
+        // validate valid file name generation
+
+        cleanOutputFiles();
+
+        // no previous output
+        Assumptions.assumeFalse(
+                (new File("rule.txt")).exists(),
+                "rule.txt already exists"
+        );
+        Assertions.assertEquals(
+                "rule.txt",
+                urinals.createOutputFilename(),
+                "First execution should return rule.txt"
+        );
+
+        // rule.txt exists
+        Assumptions.assumeFalse(
+                (new File("rule1.txt")).exists(),
+                "rule1.txt already exists"
+        );
+        Assertions.assertEquals(
+                "rule1.txt",
+                urinals.createOutputFilename(),
+                "Second execution should return rule1.txt"
+        );
+
+        // rule.txt and rule1.txt exits
+        Assumptions.assumeFalse(
+                (new File("rule2.txt")).exists(),
+                "rule2.txt already exists"
+        );
+        Assertions.assertEquals(
+                "rule2.txt",
+                urinals.createOutputFilename(),
+                "Third execution should return rule2.txt"
+        );
+
+        // create dummy files to simulate external changes
+        try {
+            for (int i = 3; i < 6; i++) {
+                var filename = String.format("rule%d.txt", i);
+                var file = new File(filename);
+                Assumptions.assumeFalse(
+                        file.exists(),
+                        String.format("%s already exists", filename)
+                );
+
+                file.createNewFile();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // next file name should be 6th
+        Assumptions.assumeFalse(
+                (new File("rule6.txt")).exists(),
+                "rule6.txt already exists"
+        );
+        Assertions.assertEquals(
+                "rule6.txt",
+                urinals.createOutputFilename(),
+                "filename should reflect changes from external sources"
+        );
+
+        cleanOutputFiles();
+
+        System.out.println("====== Rishikesh Anand == Test six complete =======");
+    }
+
     @AfterAll
     static void cleanup() {
         var flag = tempFile.renameTo(sourceFile);
         Assumptions.assumeTrue(flag, "Failed to restore file");
         System.out.println("Restored Input file");
+
     }
 }

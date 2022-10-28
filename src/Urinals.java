@@ -64,6 +64,18 @@ public class Urinals {
         return count;
     }
 
+    String createOutputFilename() throws IOException {
+        String filename = "rule.txt";
+        if ((new File(filename)).exists()) {
+            int fileNumber = 1;
+            do {
+                filename = String.format("rule%d.txt", fileNumber++);
+            } while((new File(filename)).exists());
+        }
+        (new File(filename)).createNewFile();
+        return filename;
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello world!");
     }

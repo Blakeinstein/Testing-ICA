@@ -87,24 +87,32 @@ class UrinalsTest {
                 "00000"
         };
 
+        // Test for EOF terminator
+        // prepare input file
         writeContents(String.join("\n", lines));
         Assumptions.assumeTrue(sourceFile.canRead(), "Unable to read input file for testing");
+
         Assertions.assertArrayEquals(
                 urinals.readFile().toArray(),
                 lines,
                 "File contents should be read correctly with EOF terminator"
         );
 
+        // Test for -1 terminator
+        // prepare input file
         var newLines = new ArrayList<>(Arrays.asList(lines));
         newLines.add("-1");
         writeContents(String.join("\n", newLines));
         Assumptions.assumeTrue(sourceFile.canRead(), "Unable to read input file for testing");
+
         Assertions.assertArrayEquals(
                 urinals.readFile().toArray(),
                 lines,
                 "File contents should be read correctly with -1 terminator"
         );
 
+        // Test for missing file
+        // delete input file
         var flag = sourceFile.delete();
         Assumptions.assumeTrue(flag, "Unable to delete file");
         Assertions.assertTrue(urinals.readFile().isEmpty(), "Missing file should yield empty list");
@@ -112,10 +120,51 @@ class UrinalsTest {
         System.out.println("====== Rishikesh Anand == Test four complete =======");
     }
 
+    @Test
+    void evaluateMaxFreeUrinals() {
+        // validate output for all possible inputs
+
+        // invalid input
+        Assertions.assertEquals(
+                -1,
+                urinals.evaluateMaxFreeUrinals("011"),
+                "Should return -1 for invalid input state"
+        );
+
+        // valid inputs
+        Assertions.assertEquals(
+                1,
+                urinals.evaluateMaxFreeUrinals("10001"),
+                "Should return correct output for valid input"
+        );
+        Assertions.assertEquals(
+                0,
+                urinals.evaluateMaxFreeUrinals("1001"),
+                "Should return correct output for valid input"
+        );
+        Assertions.assertEquals(
+                3,
+                urinals.evaluateMaxFreeUrinals("00000"),
+                "Should return correct output for valid input"
+        );
+        Assertions.assertEquals(
+                2,
+                urinals.evaluateMaxFreeUrinals("0000"),
+                "Should return correct output for valid input"
+        );
+        Assertions.assertEquals(
+                1,
+                urinals.evaluateMaxFreeUrinals("01000"),
+                "Should return correct output for valid input"
+        );
+
+        System.out.println("====== Rishikesh Anand == Test five complete =======");
+    }
+
     @AfterAll
     static void cleanup() {
         var flag = tempFile.renameTo(sourceFile);
         Assumptions.assumeTrue(flag, "Failed to restore file");
-        System.out.println("Restored file");
+        System.out.println("Restored Input file");
     }
 }

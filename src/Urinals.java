@@ -45,6 +45,25 @@ public class Urinals {
         return list;
     }
 
+    /**
+     * Calculates max number of urinals that can be occupied for a given input.
+     * @param input Initial state to consider
+     * @return -1 for invalid input, max number of available urinals otherwise.
+     */
+    int evaluateMaxFreeUrinals(String input) {
+        if (!validateInput(input)) return -1;
+        int count = 0;
+        var chars = input.toCharArray();
+        var n = input.length();
+        for (int i = 0; i < n; i++) {
+            if (chars[i] == '0' && ((i==0 || chars[i-1] ==  '0') & (i==n-1 || chars[i+1] == '0'))) {
+                count++;
+                chars[i] = '1';
+            }
+        }
+        return count;
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello world!");
     }
